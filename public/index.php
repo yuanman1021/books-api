@@ -6,6 +6,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
+$app->add(new App\Middleware\JsonBodyParser());
+$app->add(new App\Middleware\Cors());
+
 $app->addRoutingMiddleware();
 
 $app->addErrorMiddleware(true, true, true);
