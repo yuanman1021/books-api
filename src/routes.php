@@ -21,5 +21,6 @@ return function (App $app): void {
         $g->post('/books', [BookController::class, 'create']);
         $g->put('/books/{id}', [BookController::class, 'update']);
         $g->delete('/books/{id}', [BookController::class, 'delete']);
+        $g->post('/reset', [BookController::class, 'reset']);
     });
 };

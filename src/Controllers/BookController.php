@@ -8,12 +8,39 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 final class BookController
 {
     private static array $books = [];
+    private static bool $loaded = false;
 
-    private static function bootstrap(): void
-    {
-        if (self::$books === []) {
-            self::$books = require __DIR__ . '/../Data/books.php';
+    private static function storeFile(): string {
+        $dir = __DIR__ . '/../../var';
+        if (!is_dir($dir)) @mkdir($dir, 0777, true);
+        return $dir . DIRECTORY_SEPARATOR . 'books.json';
+    }
+
+    private static function load(): void {
+        if (self::$loaded) return;
+
+        $file = self::storeFile();
+
+        if (is_file($file)) {
+            $data = json_decode((string)@file_get_contents($file), true);
+            if (is_array($data)) {
+                self::$books = $data;
+                self::$loaded = true;
+                return;
+            }
         }
+
+        self::$books = require __DIR__ . '/../Data/books.php';
+        self::$loaded = true;
+        self::save();
+    }
+
+    private static function save(): void {
+        @file_put_contents(
+            self::storeFile(),
+            json_encode(self::$books, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            LOCK_EX
+        );
     }
 
     /**
@@ -24,7 +51,7 @@ final class BookController
      */
     public function index(Request $req, Response $res): Response
     {
-        self::bootstrap();
+        self::load();
 
         $params = $req->getQueryParams();
         $items = self::$books;
@@ -53,7 +80,7 @@ final class BookController
      */
     public function show(Request $req, Response $res, array $args): Response
     {
-        self::bootstrap();
+        self::load();
 
         $id = (int)($args['id'] ?? 0);
         $book = $this->findById($id);
@@ -68,7 +95,7 @@ final class BookController
      */
     public function create(Request $req, Response $res): Response
     {
-        self::bootstrap();
+        self::load();
 
         $body = (array)($req->getParsedBody() ?? []);
 
@@ -90,6 +117,8 @@ final class BookController
 
         self::$books[] = $book;
 
+        self::save();
+
         return $this->json($res, [
             'message' => 'Book created',
             'data' => $book
@@ -101,7 +130,7 @@ final class BookController
      */
     public function update(Request $req, Response $res, array $args): Response
     {
-        self::bootstrap();
+        self::load();
 
         $id = (int)($args['id'] ?? 0);
         $idx = $this->findIndexById($id);
@@ -132,6 +161,8 @@ final class BookController
 
         self::$books[$idx] = $current;
 
+        self::save();
+
         return $this->json($res, [
             'message' => 'Book updated',
             'data' => $current
@@ -143,7 +174,7 @@ final class BookController
      */
     public function delete(Request $req, Response $res, array $args): Response
     {
-        self::bootstrap();
+        self::load();
 
         $id = (int)($args['id'] ?? 0);
         $idx = $this->findIndexById($id);
@@ -156,9 +187,26 @@ final class BookController
 
         array_splice(self::$books, $idx, 1);
 
+        self::save();
+
         return $this->json($res, [
             'message' => 'Book deleted',
             'data' => $deleted
+        ]);
+    }
+
+    /**
+     * POST /api/reset — restore the seed data
+     */
+    public function reset(Request $req, Response $res): Response
+    {
+        self::$books = require __DIR__ . '/../Data/books.php';
+        self::$loaded = true;
+        self::save();
+
+        return $this->json($res, [
+            'message' => 'Data reset to seed',
+            'count' => count(self::$books)
         ]);
     }
 

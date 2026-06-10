@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'utm/books-api',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '4d9b97808cae6ba3d8e6c6f57573a18d1e90f933',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -122,9 +122,9 @@
             'dev_requirement' => false,
         ),
         'utm/books-api' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '4d9b97808cae6ba3d8e6c6f57573a18d1e90f933',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
