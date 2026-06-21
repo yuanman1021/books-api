@@ -3,7 +3,7 @@
         'name' => 'utm/books-api',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4d9b97808cae6ba3d8e6c6f57573a18d1e90f933',
+        'reference' => '7b4476689b0d86c9084656898163b1df3f89aa89',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -124,7 +124,7 @@
         'utm/books-api' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4d9b97808cae6ba3d8e6c6f57573a18d1e90f933',
+            'reference' => '7b4476689b0d86c9084656898163b1df3f89aa89',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
